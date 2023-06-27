@@ -1,9 +1,9 @@
 import { useUserInfo } from "../page";
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const LogIn = () => {
-    const { setIsSignIn } = useUserInfo()
+    const { setIsSignIn, setIsClickLogIn } = useUserInfo()
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -27,12 +27,20 @@ const LogIn = () => {
   const handleLogIn = () => {
     // 회원 여부 확인 로직
     setIsSignIn(true)    
+    setIsClickLogIn(false)
   }
+
+  useEffect(() => {
+    return() => {
+      setUsername("")
+      setPassword("")
+    }
+  }, [])
 
   return (
     <div>
       <div>마크 계정 공유</div>
-      <div>홈버튼</div>
+      <div onClick={() => setIsClickLogIn(false)}>홈버튼</div>
       <br />
       <div>아이디</div>
       <input type="text" value={username} onChange={handleUsernameChange} />

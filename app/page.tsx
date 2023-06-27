@@ -13,11 +13,10 @@ export const useUserInfo = create<UserInfo>((set) => ({
 }));
 
 export default function Home() {
-  const { isSignIn } = useUserInfo()
-
-  const [isClickLogIn, setIsClickLogIn] = useState<boolean>(false)
+  const { isSignIn, setIsSignIn, isClickLogIn, setIsClickLogIn } = useUserInfo()
 
   const userName = "000"
+  const connectedUserName = "이수현"
 
   useEffect(() => {
 
@@ -26,16 +25,16 @@ export default function Home() {
   return (
     <>
       <h1>마크 계정 공유</h1>
-      {isSignIn ? (<><div>{userName}님 하이</div><div>로그아웃</div></>):(<><div>로그인 먼저 해주세요</div><div>로그인</div></>)}
+      {isSignIn ? (<><div>{userName}님 하이</div><div onClick={() => setIsSignIn(false)}>로그아웃</div></>):(<><div>로그인 먼저 해주세요</div><div onClick={() => setIsClickLogIn(true)}>로그인</div></>)}
       
       <br></br>
       <div>사용 여부</div>
-      <div>{"<---"}000님</div>
+      <div>{"<---"}{connectedUserName}님</div>
       <br></br>
       <div>사용기록</div>
       <div>방명록</div>
       <Link href="/signUp">회원가입</Link>
-      {isClickLogIn ? (<LogIn />):(<></>)}
+      {isClickLogIn && <LogIn />}
     </>
   )
 }

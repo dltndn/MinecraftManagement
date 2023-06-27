@@ -1,21 +1,25 @@
-'use client';
+"use client";
 import { useUserInfo } from "../page";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
-    const { setIsSignIn } = useUserInfo()
+  const { setIsSignIn } = useUserInfo();
 
-  const [username, setUsername] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordCheck, setPasswordCheck] = useState<string>("");
   const [quizAnswer, setQuizAnswer] = useState<string>("");
 
   const router = useRouter();
 
-
   const handleUsernameChange = (event: any) => {
-    setUsername(event.target.value);
+    setUserName(event.target.value);
+  };
+
+  const handleUserIdChange = (event: any) => {
+    setUserId(event.target.value);
   };
 
   const handlePasswordChange = (event: any) => {
@@ -23,39 +27,72 @@ const SignUpPage = () => {
   };
 
   const handlePasswordChkChange = (event: any) => {
-    setPasswordCheck(event.target.value)
-  }
+    setPasswordCheck(event.target.value);
+  };
 
   const handleQAnsChange = (event: any) => {
-    setQuizAnswer(event.target.value)
-  }
+    setQuizAnswer(event.target.value);
+  };
 
   const handleSignUp = (event: any) => {
-    let isSuccess: boolean
+    let isSuccess: boolean;
     event.preventDefault();
     // 회원가입 로직 구현
 
     // 성공 여부
-    isSuccess = true
+    isSuccess = false;
     if (isSuccess) {
-        router.push("/")
+      router.push("/");
     } else {
-        alert("가입에 실패했습니다. 다시 해주세요")
+      resetInputData()
+      alert("가입에 실패했습니다. 다시 해주세요");
     }
   };
+
+  const resetInputData = () => {
+    setPassword("");
+    setPasswordCheck("");
+    setQuizAnswer("");
+  };
+
+  useEffect(() => {
+    return () => {
+      resetInputData()
+    };
+  }, []);
 
   return (
     <div>
       <div>회원 가입</div>
       <div onClick={() => router.push("/")}>홈버튼</div>
       <br />
-      <div>아이디</div>
-      <input type="text" value={username} onChange={handleUsernameChange} />
+      <div>성함</div>
+      <input type="text" value={userName} onChange={handleUsernameChange} />
       <br />
-      <div>비밀번호</div>
-      <input type="password" value={password} onChange={handlePasswordChange} />
-      <div>비밀번호 확인</div>
-      <input type="password" value={passwordCheck} onChange={handlePasswordChkChange} />
+      <div>아이디</div>
+      <input
+        type="text"
+        value={userId}
+        onChange={handleUserIdChange}
+        maxLength={14}
+      />
+      <br />
+      <div>비밀번호(4자리만)</div>
+      <input
+        type="password"
+        value={password}
+        onChange={handlePasswordChange}
+        maxLength={4}
+      />
+      <div>
+        비밀번호 확인<div>|비밀번호 일치 여부</div>
+      </div>
+      <input
+        type="password"
+        value={passwordCheck}
+        onChange={handlePasswordChkChange}
+        maxLength={4}
+      />
       <br />
       <div>이 웹페이지의 제작자 이름은?</div>
       <input type="text" value={quizAnswer} onChange={handleQAnsChange} />
