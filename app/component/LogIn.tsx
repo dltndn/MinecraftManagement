@@ -23,7 +23,7 @@ const LogIn = () => {
   const handleSignUp = (event: any) => {
     event.preventDefault();
     // 회원가입 로직 구현
-    setIsClickLogIn(false)
+    
     router.push("/signUp");
   };
 
@@ -38,6 +38,7 @@ const LogIn = () => {
     return () => {
       setUsername("");
       setPassword("");
+      setIsClickLogIn(false);
     };
   }, []);
 
