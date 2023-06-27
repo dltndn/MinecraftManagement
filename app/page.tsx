@@ -43,7 +43,7 @@ export default function Home() {
           <div>방명록</div>
         </GuestBook>
       </Container>
-      {isClickLogIn && <LogIn />}
+      {isClickLogIn && <Backdrop><LogIn /></Backdrop>}
     </>
   )
 }
@@ -60,4 +60,18 @@ const UsageHistory = styled.div`
 
 const GuestBook = styled.div`
   flex: 1;
+`;
+
+const Backdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 `;
