@@ -3,4 +3,6 @@ export interface UserInfo {
     setIsSignIn: (data: boolean) => void;
     isClickLogIn: boolean;
     setIsClickLogIn: (data: boolean) => void;
+    userNameG: string;
+    setUserNameG: (data: string) => void;
 }

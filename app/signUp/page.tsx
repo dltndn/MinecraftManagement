@@ -38,14 +38,19 @@ const SignUpPage = () => {
     let isSuccess: boolean;
     event.preventDefault();
     // 회원가입 로직 구현
+    if (quizAnswer === process.env.NEXT_PUBLIC_ANS_WORD) {
+      isSuccess = true
+    } else {
+      isSuccess = false;
+    }
 
     // 성공 여부
-    isSuccess = false;
     if (isSuccess) {
+      alert("가입에 성공했습니다.");
       router.push("/");
     } else {
       resetInputData()
-      alert("가입에 실패했습니다. 다시 해주세요");
+      alert("가입에 실패했습니다. 다시 해주세요.");
     }
   };
 
@@ -56,6 +61,7 @@ const SignUpPage = () => {
   };
 
   useEffect(() => {
+    console.log(process.env.NEXT_PUBLIC_ANS_WORD)
     return () => {
       resetInputData()
     };

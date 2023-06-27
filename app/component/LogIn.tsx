@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const LogIn = () => {
-    const { setIsSignIn, setIsClickLogIn } = useUserInfo()
+    const { setIsSignIn, setIsClickLogIn, setUserNameG } = useUserInfo()
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -28,6 +28,7 @@ const LogIn = () => {
     // 회원 여부 확인 로직
     setIsSignIn(true)    
     setIsClickLogIn(false)
+    setUserNameG("나나나")
   }
 
   useEffect(() => {
