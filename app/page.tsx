@@ -47,7 +47,7 @@ export default function Home() {
       {isSignIn ? (
         <>
           <LoginContainer>
-          <div>{userNameG}님 하이</div>
+          <div>{userNameG}님 Hi!</div>
           <LogOutButton
             onClick={() => {
               setIsSignIn(false);
@@ -61,7 +61,6 @@ export default function Home() {
       ) : (
         <>
           <LoginContainer>
-          <div>로그인 먼저 해주세요</div>
           <LogInButton onClick={() => setIsClickLogIn(true)}>로그인</LogInButton>
           </LoginContainer>
         </>
@@ -113,11 +112,13 @@ const Title = styled.h1`
   position: absolute;
   top: 0;
   left: 0;
+  padding-left: 0.5em;
 `;
 
 const LoginContainer = styled.div`
   display: flex;
   align-items: center;
+  padding-right: 0.5em;
 `;
 
 const LogInLogOut = styled.div`
@@ -144,10 +145,13 @@ const Container = styled.div`
 const UsageHistory = styled.div`
   flex: 1;
   margin-right: 20px;
+  padding-left: 0.5em;
 `;
 
 const GuestBook = styled.div`
   flex: 1;
+  border-left: 1px solid #ccc;
+  padding-left: 0.5em;
 `;
 
 const Backdrop = styled.div`
