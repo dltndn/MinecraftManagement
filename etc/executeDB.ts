@@ -16,5 +16,7 @@ export const checkUser_db = async (submitData: User_db) => {
         console.log("error")
         console.log(e)
         return null
+    } finally {
+        await connection.end();
     }
 }
