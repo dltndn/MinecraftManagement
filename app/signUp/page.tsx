@@ -3,7 +3,7 @@ import { useUserInfo } from "../page";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
-import { FiHome } from "react-icons/fi";
+import { FiHome, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 const SignUpPage = () => {
   const { setIsSignIn } = useUserInfo();
@@ -102,7 +102,7 @@ const SignUpPage = () => {
         <Label>
           비밀번호 확인
           <PasswordCheck>
-            {password === passwordCheck ? "일치" : "불일치"}
+            {password === passwordCheck ? <FiCheckCircle size={12} /> : <FiXCircle size={12} />}
           </PasswordCheck>
         </Label>
         <Input

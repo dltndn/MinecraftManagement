@@ -6,3 +6,8 @@ export interface UserInfo {
     userNameG: string;
     setUserNameG: (data: string) => void;
 }
+
+export interface User_db {
+    user_id: string;
+    user_password: string;
+}

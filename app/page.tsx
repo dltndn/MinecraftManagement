@@ -32,7 +32,7 @@ export default function Home() {
   const [isUsingAccounnt, setIsUsingAccount] = useState<boolean | null>(null);
   const [connectedUserName, setConnectedUserName] = useState<string | null>(
     null
-  );
+  ); 
 
   useEffect(() => {
     // 계정 사용여부 체크 후
@@ -92,7 +92,7 @@ export default function Home() {
       </MiddleDiv>
       <Container>
         <UsageHistory>
-          <div>사용기록</div>
+          <div>최근기록</div>
         </UsageHistory>
 
         <GuestBook>
