@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { FiHome } from "react-icons/fi";
+import axios from "axios";
+
+const url = process.env.NEXT_PUBLIC_DB_URL
 
 const LogIn = () => {
   const { setIsSignIn, setIsClickLogIn, setUserNameG } = useUserInfo();
 
-  const [username, setUsername] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const router = useRouter();
 
-  const handleUsernameChange = (event: any) => {
-    setUsername(event.target.value);
+  const handleUserIdChange = (event: any) => {
+    setUserId(event.target.value);
   };
 
   const handlePasswordChange = (event: any) => {
@@ -22,21 +25,35 @@ const LogIn = () => {
 
   const handleSignUp = (event: any) => {
     event.preventDefault();
-    // 회원가입 로직 구현
-    
     router.push("/signUp");
   };
 
-  const handleLogIn = () => {
-    // 회원 여부 확인 로직
-    setIsSignIn(true);
-    setIsClickLogIn(false);
-    setUserNameG("나나나");
+  const handleLogIn = async () => {
+    const requestData = {
+      user_id: userId,
+      user_password: password
+    };
+  
+    await axios.post(`${url}/api/checkUser`, requestData)
+      .then((response) => {
+        // 서버로부터 받은 응답 데이터 처리
+        if (response.data.result !== null) {
+          setIsSignIn(true);
+          setIsClickLogIn(false);
+          setUserNameG(response.data.result);
+        } else {
+          alert("로그인 실패...")
+          setUserId("")
+          setPassword("")
+        }
+      })
+      .catch((error) => {
+      });
   };
 
   useEffect(() => {
     return () => {
-      setUsername("");
+      setUserId("");
       setPassword("");
       setIsClickLogIn(false);
     };
@@ -50,8 +67,8 @@ const LogIn = () => {
       </HomeButton>
       <StyledInput
         type="text"
-        value={username}
-        onChange={handleUsernameChange}
+        value={userId}
+        onChange={handleUserIdChange}
         placeholder="아이디"
       />
       <StyledInput

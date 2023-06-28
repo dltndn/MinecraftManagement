@@ -1,12 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { dbConnect } from "@/etc/dbConnector";
+import { checkUser_db } from "@/etc/executeDB";
 
-const users = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 3, name: 'Boob' },
-];
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    res.status(200).json(users);
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    if (req.method === "POST") {
+      const submitData = req.body; // POST 요청의 데이터
+      const result = await checkUser_db(submitData);
+      
+      if (result !== null) {
+        res.status(200).json({ result });
+      } else {
+        res.status(200).json({ result });
+      }
+    } else {
+      res.status(405).json({ error: "Method Not Allowed" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
+}
 
