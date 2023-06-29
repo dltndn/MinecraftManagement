@@ -6,12 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === "POST") {
       const submitData = req.body; // POST 요청의 데이터
       const result = await checkUser_db(submitData);
-      
-      if (result !== null) {
-        res.status(200).json({ result });
-      } else {
-        res.status(200).json({ result });
-      }
+      res.status(200).json({ result });
     } else {
       res.status(405).json({ error: "Method Not Allowed" });
     }

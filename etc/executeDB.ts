@@ -20,3 +20,19 @@ export const checkUser_db = async (submitData: User_db) => {
         await connection.end();
     }
 }
+
+export const hasBeenUsed_db = async () => {
+    const connection = await dbConnect();
+    try {
+        const rows = await connection.query(`SELECT NAME FROM USER WHERE ISUSING = 1;`);
+        if (rows[0] === undefined) {
+            return null
+        } else {
+            return rows[0].NAME
+        }
+    } catch(e) {
+        return null
+    } finally {
+        await connection.end();
+    }
+}

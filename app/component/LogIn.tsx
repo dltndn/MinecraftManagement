@@ -53,7 +53,6 @@ const LogIn = () => {
 
   useEffect(() => {
     return () => {
-      setUserId("");
       setPassword("");
       setIsClickLogIn(false);
     };

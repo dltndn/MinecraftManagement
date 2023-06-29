@@ -7,6 +7,8 @@ import Image from "next/image";
 
 import LogIn from "./component/LogIn";
 
+import axios from "axios"
+
 const openIcon = require("./picture/openIcon.png");
 const closedIcon = require("./picture/closedIcon.png");
 const loadingIcon = require("./picture/loadingIcon.png");
@@ -34,10 +36,22 @@ export default function Home() {
     null
   ); 
 
+  const getHasBeenUsed = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/api/hasBeenUsed`);
+      if (response.data.result === null) {
+        setIsUsingAccount(false);
+      } else {
+        setIsUsingAccount(true);
+        setConnectedUserName(response.data.result);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
-    // 계정 사용여부 체크 후
-    setIsUsingAccount(false);
-    setConnectedUserName("나나나");
+    getHasBeenUsed()
   }, []);
 
   return (
