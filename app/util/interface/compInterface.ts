@@ -16,3 +16,7 @@ export interface SetUsing_db {
     user_name: string;
     usage: string;
 }
+
+export interface UserSignUp_db extends User_db{
+    user_name: string;
+}

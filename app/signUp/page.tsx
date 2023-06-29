@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { FiHome, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
+import axios from "axios";
+
 const SignUpPage = () => {
   const { setIsSignIn } = useUserInfo();
 
@@ -15,6 +17,27 @@ const SignUpPage = () => {
   const [quizAnswer, setQuizAnswer] = useState<string>("");
 
   const router = useRouter();
+
+  const signUp = async () => {
+    const requestData = {
+      user_name: userName,
+      user_id: userId,
+      user_password: password
+    };
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/setUsing`, requestData
+      );
+      if (response.data.result === true) {
+        return true
+      } else {
+        return false
+      }
+    } catch (error) {
+      console.log(error);
+      return false
+    }
+  }
 
   const handleUsernameChange = (event: any) => {
     setUserName(event.target.value);
@@ -36,7 +59,7 @@ const SignUpPage = () => {
     setQuizAnswer(event.target.value);
   };
 
-  const handleSignUp = (event: any) => {
+  const handleSignUp = async (event: any) => {
     let isSuccess: boolean;
     event.preventDefault();
     // 회원가입 로직 구현
@@ -48,11 +71,17 @@ const SignUpPage = () => {
 
     // 성공 여부
     if (isSuccess) {
-      alert("가입에 성공했습니다.");
-      router.push("/");
+      const res = await signUp()
+      resetInputData()
+      if (res) {
+        alert("성공!")
+        router.push("/");
+      } else {
+        alert("실패... 다시 시도해주세요")
+      }
     } else {
-      resetInputData();
-      alert("가입에 실패했습니다. 다시 해주세요.");
+      setQuizAnswer("");
+      alert("제작자 이름이 틀렸습니다. 다시 해주세요.");
     }
   };
 

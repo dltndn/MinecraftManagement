@@ -1,5 +1,5 @@
 import { dbConnect } from "./dbConnector";
-import { User_db, SetUsing_db } from "@/app/util/interface/compInterface";
+import { User_db, SetUsing_db, UserSignUp_db } from "@/app/util/interface/compInterface";
 
 //** user_id, user_password */
 export const checkUser_db = async (submitData: User_db) => {
@@ -41,6 +41,20 @@ export const setUsing_db = async (submitData: SetUsing_db) => {
     const connection = await dbConnect();
     try {
         const rows = await connection.query(`UPDATE USER SET ISUSING = ${submitData.usage} WHERE NAME = '${submitData.user_name}';`);
+        return true
+    } catch(e) {
+        return false
+    } finally {
+        await connection.end();
+    }
+}
+
+export const signUp_db = async (submitData: UserSignUp_db) => {
+    const connection = await dbConnect();
+    try {
+        const rows = await connection.query(`INSERT INTO USER (NAME, PASSWORD, ID, ISUSING)
+        VALUES ('${submitData.user_name}', '${submitData.user_password}', '${submitData.user_id}', 0);
+        `);
         return true
     } catch(e) {
         console.log(e)
