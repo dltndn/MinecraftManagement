@@ -7,7 +7,8 @@ import Image from "next/image";
 
 import LogIn from "./component/LogIn";
 
-import axios from "axios"
+import axios from "axios";
+import { Familjen_Grotesk } from "next/font/google";
 
 const openIcon = require("./picture/openIcon.png");
 const closedIcon = require("./picture/closedIcon.png");
@@ -34,11 +35,46 @@ export default function Home() {
   const [isUsingAccounnt, setIsUsingAccount] = useState<boolean | null>(null);
   const [connectedUserName, setConnectedUserName] = useState<string | null>(
     null
-  ); 
+  );
+  const [isSet, setIsSet] = useState<number>(0)
+
+  const setUsingAccount = async (usageInput: boolean) => {
+    let usageData: string;
+    if (usageInput) {
+      usageData = "1";
+    } else {
+      usageData = "0";
+      if (connectedUserName !== userNameG) {
+        alert("사용자가 아닙니다;;")
+        return
+      }
+    }
+
+    const requestData = {
+      user_name: userNameG,
+      usage: usageData,
+    };
+    if (userNameG !== "000") {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_DB_URL}/api/setUsing`, requestData
+        );
+        if (response.data.result === true) {
+          setIsSet(isSet + 1)
+        } else {
+          alert("실패... 다시 시도해주세요")
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const getHasBeenUsed = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/api/hasBeenUsed`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/hasBeenUsed`
+      );
       if (response.data.result === null) {
         setIsUsingAccount(false);
       } else {
@@ -48,61 +84,67 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    getHasBeenUsed()
-  }, []);
+    getHasBeenUsed();
+  }, [isSet]);
 
   return (
     <>
       <Title>마크 계정 공유</Title>
       <LogInLogOut>
-      {isSignIn ? (
-        <>
-          <LoginContainer>
-          <div>{userNameG}님 Hi!</div>
-          <LogOutButton
-            onClick={() => {
-              setIsSignIn(false);
-              setUserNameG("");
-            }}
-          >
-            로그아웃
-          </LogOutButton>
-          </LoginContainer>
-        </>
-      ) : (
-        <>
-          <LoginContainer>
-          <LogInButton onClick={() => setIsClickLogIn(true)}>로그인</LogInButton>
-          </LoginContainer>
-        </>
-      )}
+        {isSignIn ? (
+          <>
+            <LoginContainer>
+              <div>{userNameG}님 Hi!</div>
+              <LogOutButton
+                onClick={() => {
+                  setIsSignIn(false);
+                  setUserNameG("");
+                }}
+              >
+                로그아웃
+              </LogOutButton>
+            </LoginContainer>
+          </>
+        ) : (
+          <>
+            <LoginContainer>
+              <LogInButton onClick={() => setIsClickLogIn(true)}>
+                로그인
+              </LogInButton>
+            </LoginContainer>
+          </>
+        )}
       </LogInLogOut>
       <MiddleDiv>
-      {isUsingAccounnt !== null ? (
-        <>
-          {isUsingAccounnt ? (
-            <>
-              <Image src={closedIcon} alt="사용중" width={200} />
-              <div>
-                {"<---"}
-                {connectedUserName}님이 사용중
-              </div>
-            </>
-          ) : (
-            <>
-              <Image src={openIcon} alt="사용x" width={200} />
-              <div>아무도 사용 안하는 중</div>
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <Image src={loadingIcon} alt="로딩" width={200} />
-        </>
-      )}
+        {isUsingAccounnt !== null ? (
+          <>
+            {isUsingAccounnt ? (
+              <>
+                <div onClick={async () => await setUsingAccount(false)}>
+                  <Image src={closedIcon} alt="사용중" width={200} />
+                  <div>
+                    {"<---"}
+                    {connectedUserName}님이 사용중
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div onClick={async () => await setUsingAccount(true)}>
+                  <Image src={openIcon} alt="사용x" width={200} />
+                  <div>아무도 사용 안하는 중</div>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Image src={loadingIcon} alt="로딩" width={200} />
+          </>
+        )}
       </MiddleDiv>
       <Container>
         <UsageHistory>
@@ -197,6 +239,6 @@ const LogInButton = styled(Button)`
 `;
 
 const LogOutButton = styled(Button)`
-background-color: #323b4d;
-margin-left: 1em;
+  background-color: #323b4d;
+  margin-left: 1em;
 `;

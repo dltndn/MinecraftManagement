@@ -11,3 +11,8 @@ export interface User_db {
     user_id: string;
     user_password: string;
 }
+
+export interface SetUsing_db {
+    user_name: string;
+    usage: string;
+}
