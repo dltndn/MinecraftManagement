@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { create } from "zustand";
-import { UserInfo } from "./util/interface/compInterface";
+import { useUserInfo } from "./util/zustandManagement";
 import styled from "styled-components";
 import Image from "next/image";
 
@@ -13,14 +12,6 @@ const openIcon = require("./picture/openIcon.png");
 const closedIcon = require("./picture/closedIcon.png");
 const loadingIcon = require("./picture/loadingIcon.png");
 
-export const useUserInfo = create<UserInfo>((set) => ({
-  isSignIn: false,
-  setIsSignIn: (newPara: boolean) => set({ isSignIn: newPara }),
-  isClickLogIn: false,
-  setIsClickLogIn: (newPara: boolean) => set({ isClickLogIn: newPara }),
-  userNameG: "000",
-  setUserNameG: (newPara: string) => set({ userNameG: newPara }),
-}));
 
 export default function Home() {
   const {

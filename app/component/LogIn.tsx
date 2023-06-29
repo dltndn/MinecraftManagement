@@ -1,4 +1,4 @@
-import { useUserInfo } from "../page";
+import { useUserInfo } from "../util/zustandManagement";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
