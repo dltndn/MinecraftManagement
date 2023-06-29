@@ -1,5 +1,4 @@
 "use client";
-import { useUserInfo } from "../page";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
@@ -8,8 +7,6 @@ import { FiHome, FiCheckCircle, FiXCircle } from "react-icons/fi";
 import axios from "axios";
 
 const SignUpPage = () => {
-  const { setIsSignIn } = useUserInfo();
-
   const [userName, setUserName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");

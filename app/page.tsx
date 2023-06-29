@@ -8,7 +8,6 @@ import Image from "next/image";
 import LogIn from "./component/LogIn";
 
 import axios from "axios";
-import { Familjen_Grotesk } from "next/font/google";
 
 const openIcon = require("./picture/openIcon.png");
 const closedIcon = require("./picture/closedIcon.png");
