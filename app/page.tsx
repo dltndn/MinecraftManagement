@@ -29,7 +29,9 @@ export default function Home() {
   const [isSet, setIsSet] = useState<number>(0)
 
   const setUsingAccount = async (usageInput: boolean) => {
-    let usageData: string;
+    const clicked = confirm("사용 중으로 변경하시겠습니까?")
+    if (clicked) {
+      let usageData: string;
     if (usageInput) {
       usageData = "1";
     } else {
@@ -57,6 +59,7 @@ export default function Home() {
       } catch (error) {
         console.log(error);
       }
+    }
     }
   };
 
