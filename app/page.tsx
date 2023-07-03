@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Image from "next/image";
 
 import LogIn from "./component/LogIn";
+import GuestBook from "./component/GuestBook";
 
 import axios from "axios";
 
@@ -144,9 +145,9 @@ export default function Home() {
           <div>최근기록</div>
         </UsageHistory>
 
-        <GuestBook>
-          <div>방명록</div>
-        </GuestBook>
+        <GuestBookSt>
+          <GuestBook />
+        </GuestBookSt>
       </Container>
       {isClickLogIn && (
         <Backdrop>
@@ -197,10 +198,11 @@ const UsageHistory = styled.div`
   padding-left: 0.5em;
 `;
 
-const GuestBook = styled.div`
+const GuestBookSt = styled.div`
   flex: 1;
   border-left: 1px solid #ccc;
   padding-left: 0.5em;
+  padding-right: 0.5em;
 `;
 
 const Backdrop = styled.div`
