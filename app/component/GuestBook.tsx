@@ -2,12 +2,14 @@ import { FiPlusSquare } from "react-icons/fi";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { getTimeAgo } from "../util/calAny";
+import axios from "axios";
 
 interface ContentsObj {
   name: string;
   message: string;
   comment_count: number;
   timeStamp: number;
+  bookId: number;
 }
 
 interface CommentsPara {
@@ -25,11 +27,10 @@ const Comments = ({ writerName }: CommentsPara) => {
   ];
 
   const TimeAgo = styled.div`
-  font-size: 12px;
-  color: #888;
-  margin-left: 2em;
-`;
-
+    font-size: 12px;
+    color: #888;
+    margin-left: 2em;
+  `;
 
   return (
     <>
@@ -68,15 +69,31 @@ const Contents = ({ data }: ContentsPara) => {
 };
 
 const GuestBook = () => {
-  const mockContents = [
-    { name: "james", message: "wow", comment_count: 3, timeStamp: 1688371907 },
-    {
-      name: "michael",
-      message: "nice",
-      comment_count: 1,
-      timeStamp: 1688278307,
-    },
-  ];
+  const [contents, setContents] = useState<ContentsObj[] | null>(null);
+  //   const mockContents = [
+  //     { name: "james", message: "wow", comment_count: 3, timeStamp: 1688371907 },
+  //     {
+  //       name: "michael",
+  //       message: "nice",
+  //       comment_count: 1,
+  //       timeStamp: 1688278307,
+  //     },
+  //   ];
+
+  const getGuestBookData = async () => {
+    try {
+        const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_DB_URL}/api/getGuestBook`
+            );
+            setContents(response.data.result)
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getGuestBookData()
+  }, [])
 
   return (
     <Container>
@@ -86,9 +103,15 @@ const GuestBook = () => {
           <FiPlusSquare size={22} />
         </AddButton>
       </TitleContainer>
-      {mockContents.map((val, index) => (
-        <Contents key={index} data={val} />
-      ))}
+      {contents === null ? (
+        <>로딩중...</>
+      ) : (
+        <>
+          {contents.map((val, index) => (
+            <Contents key={index} data={val} />
+          ))}
+        </>
+      )}
     </Container>
   );
 };

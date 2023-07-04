@@ -63,3 +63,37 @@ export const signUp_db = async (submitData: UserSignUp_db) => {
         await connection.end();
     }
 }
+
+export const getGuestBook_db = async () => {
+    const connection = await dbConnect();
+    try {
+        const rows = await connection.query(`SELECT G.BOOKID AS bookId, G.MESSAGE AS message, G.TIMESTAMP AS timeStamp, U.NAME AS name, CAST(COUNT(C.COMMENTID) AS CHAR) AS comment_count
+        FROM GUESTBOOK G
+        INNER JOIN USER U ON G.USERID = U.USERID
+        LEFT JOIN COMMENT C ON G.BOOKID = C.BOOKID
+        GROUP BY G.BOOKID, G.USERID, U.NAME
+        ORDER BY G.BOOKID DESC
+        LIMIT 5;               
+        `)
+        if (rows[0] === undefined) {
+            return null
+        } else {
+            return rows
+        }
+    } catch (e) {
+        return null
+    } finally {
+        await connection.end();
+    }
+}
+
+export const getComments_db = async (submitData: UserSignUp_db) => {
+    const connection = await dbConnect();
+    try {
+
+    } catch (e) {
+
+    } finally {
+        await connection.end();
+    }
+}
