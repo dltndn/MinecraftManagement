@@ -13,37 +13,65 @@ interface ContentsObj {
 }
 
 interface CommentsPara {
-  writerName: string;
+  bookId: number;
 }
 
 interface ContentsPara {
   data: ContentsObj;
 }
 
-const Comments = ({ writerName }: CommentsPara) => {
-  const mockComments = [
-    { name: "james", message: "wow", timeStamp: 1688371907 },
-    { name: "tom", message: "haha", timeStamp: 1688371907 },
-  ];
+interface CommentsObj {
+    name: string;
+    message: string;
+    timeStamp: number;
+}
+
+const Comments = ({ bookId }: CommentsPara) => {
+  const [comments, setComments] = useState<CommentsObj[] | null>(null);
 
   const TimeAgo = styled.div`
-    font-size: 12px;
+    font-size: 10px;
     color: #888;
     margin-left: 2em;
   `;
 
+  const getComments = async () => {
+    const requestData = {
+      book_id: bookId,
+    };
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/getComment`,
+        requestData
+      );
+      setComments(response.data.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getComments();
+  }, []);
+
   return (
     <>
-      {mockComments.map((val, index) => (
-        <CommentBubble key={index}>
-          <BubbleContent>
-            <div>
-              {val.name} | {val.message}
-            </div>
-            <TimeAgo>{getTimeAgo(val.timeStamp)}</TimeAgo>
-          </BubbleContent>
-        </CommentBubble>
-      ))}
+      {comments === null ? (
+        <>로딩중...</>
+      ) : (
+        <>
+          {comments.map((val, index) => (
+            <CommentBubble key={index}>
+              <BubbleContent>
+                <div style={{'font-size': '12px'}}>
+                  {val.name} | {val.message}
+                </div>
+                <TimeAgo>{getTimeAgo(val.timeStamp)}</TimeAgo>
+              </BubbleContent>
+            </CommentBubble>
+          ))}
+        </>
+      )}
     </>
   );
 };
@@ -62,7 +90,7 @@ const Contents = ({ data }: ContentsPara) => {
           <CommentCount>{data.comment_count}</CommentCount>
         </CommentCountWrapper>
       ) : (
-        <Comments writerName={data.name} />
+        <Comments bookId={data.bookId} />
       )}
     </Item>
   );
@@ -70,30 +98,21 @@ const Contents = ({ data }: ContentsPara) => {
 
 const GuestBook = () => {
   const [contents, setContents] = useState<ContentsObj[] | null>(null);
-  //   const mockContents = [
-  //     { name: "james", message: "wow", comment_count: 3, timeStamp: 1688371907 },
-  //     {
-  //       name: "michael",
-  //       message: "nice",
-  //       comment_count: 1,
-  //       timeStamp: 1688278307,
-  //     },
-  //   ];
 
   const getGuestBookData = async () => {
     try {
-        const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_DB_URL}/api/getGuestBook`
-            );
-            setContents(response.data.result)
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/getGuestBook`
+      );
+      setContents(response.data.result);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    getGuestBookData()
-  }, [])
+    getGuestBookData();
+  }, []);
 
   return (
     <Container>

@@ -1,5 +1,5 @@
 import { dbConnect } from "./dbConnector";
-import { User_db, SetUsing_db, UserSignUp_db } from "@/app/util/interface/compInterface";
+import { User_db, SetUsing_db, UserSignUp_db, GuestBook_db } from "@/app/util/interface/compInterface";
 
 //** user_id, user_password */
 export const checkUser_db = async (submitData: User_db) => {
@@ -87,12 +87,21 @@ export const getGuestBook_db = async () => {
     }
 }
 
-export const getComments_db = async (submitData: UserSignUp_db) => {
+export const getComments_db = async (submitData: GuestBook_db) => {
     const connection = await dbConnect();
     try {
-
+        const rows = await connection.query(`SELECT C.MESSAGE AS message, C.TIMESTAMP AS timeStamp, U.NAME AS name
+        FROM COMMENT C
+        INNER JOIN USER U ON C.USERID = U.USERID
+        WHERE C.BOOKID = '${submitData.book_id}';
+        `)
+        if (rows[0] === undefined) {
+            return null
+        } else {
+            return rows
+        }
     } catch (e) {
-
+        return null
     } finally {
         await connection.end();
     }

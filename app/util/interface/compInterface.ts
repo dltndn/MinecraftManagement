@@ -20,3 +20,7 @@ export interface SetUsing_db {
 export interface UserSignUp_db extends User_db{
     user_name: string;
 }
+
+export interface GuestBook_db {
+    book_id: string;
+}
