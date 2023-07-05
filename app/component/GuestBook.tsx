@@ -30,7 +30,10 @@ interface CommentsObj {
 
 const Comments = ({ bookId }: CommentsPara) => {
   const [comments, setComments] = useState<CommentsObj[] | null>(null);
+  const [inputMessage, setInputMessage] = useState<string>("");
 
+  const { isSignIn, userIdG } = useUserInfo();
+  
   const TimeAgo = styled.div`
     font-size: 10px;
     color: #888;
@@ -56,6 +59,34 @@ const Comments = ({ bookId }: CommentsPara) => {
     }
   };
 
+  const handleMessage = (event: any) => {
+    setInputMessage(event.target.value);
+  };
+
+  const addCommentData = async () => {
+    if (!isSignIn) {
+        alert("로그인부터 진행해주세요");
+        return;
+      }
+      const currentTime = Math.floor(Date.now() / 1000);
+      const requestData = {
+        user_id: userIdG,
+        message: inputMessage,
+        timeStamp: currentTime.toString(),
+        book_id: bookId.toString()
+      };
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_DB_URL}/api/insertComment`,
+          requestData
+        );
+        setInputMessage("")
+        await getComments()
+      } catch (e) {
+        console.log(e);
+      }
+  };
+
   useEffect(() => {
     getComments();
   }, []);
@@ -63,7 +94,16 @@ const Comments = ({ bookId }: CommentsPara) => {
   return (
     <>
       {comments === null ? (
-        <>로딩중...</>
+        <InputCommentContainer>
+          <StyledCommentInput
+            type="text"
+            value={inputMessage}
+            onChange={handleMessage}
+            placeholder="코멘트 남기기"
+            maxLength={19}
+          />
+         <CommentButton onClick={async () => await addCommentData()}>확인</CommentButton>
+        </InputCommentContainer>
       ) : (
         <>
           {comments.map((val, index) => (
@@ -76,6 +116,16 @@ const Comments = ({ bookId }: CommentsPara) => {
               </BubbleContent>
             </CommentBubble>
           ))}
+          <InputCommentContainer>
+                <StyledCommentInput
+                  type="text"
+                  value={inputMessage}
+                  onChange={handleMessage}
+                  placeholder="코멘트 남기기"
+                  maxLength={19}
+                />
+                <CommentButton onClick={async () => await addCommentData()}>확인</CommentButton>
+              </InputCommentContainer>
         </>
       )}
     </>
@@ -86,10 +136,10 @@ const Contents = ({ data }: ContentsPara) => {
   const [isClickedComment, setIsClickedComment] = useState<boolean>(false);
 
   return (
-    <Item onClick={() => {if(data.comment_count !== "0"){setIsClickedComment(!isClickedComment)} }}>
-      <Name>{data.name}</Name>
-      <TimeAgo>{getTimeAgo(data.timeStamp)}</TimeAgo>
-      <Content>{data.message}</Content>
+    <Item>
+      <Name onClick={() => setIsClickedComment(!isClickedComment)}>{data.name}</Name>
+      <TimeAgo onClick={() => setIsClickedComment(!isClickedComment)}>{getTimeAgo(data.timeStamp)}</TimeAgo>
+      <Content onClick={() => setIsClickedComment(!isClickedComment)}>{data.message}</Content>
       {!isClickedComment ? (
         <CommentCountWrapper>
           <CommentFont>댓글</CommentFont>
@@ -105,9 +155,9 @@ const Contents = ({ data }: ContentsPara) => {
 const GuestBook = () => {
   const [contents, setContents] = useState<ContentsObj[] | null>(null);
   const [showInput, setShowInput] = useState<boolean>(false);
-  const [inputMessage, setInputMessage] = useState<string>("")
+  const [inputMessage, setInputMessage] = useState<string>("");
 
-  const { isSignIn, userIdG } = useUserInfo()
+  const { isSignIn, userIdG } = useUserInfo();
 
   const getGuestBookData = async () => {
     try {
@@ -122,14 +172,14 @@ const GuestBook = () => {
 
   const addGuestBookData = async () => {
     if (!isSignIn) {
-        alert("로그인부터 진행해주세요")
-        return
+      alert("로그인부터 진행해주세요");
+      return;
     }
     const currentTime = Math.floor(Date.now() / 1000);
     const requestData = {
       user_id: userIdG,
       message: inputMessage,
-      timeStamp: currentTime.toString()
+      timeStamp: currentTime.toString(),
     };
     try {
       const response = await axios.post(
@@ -137,7 +187,7 @@ const GuestBook = () => {
         requestData
       );
       console.log(response.data.result);
-      setShowInput(false)
+      setShowInput(false);
     } catch (e) {
       console.log(e);
     }
@@ -173,8 +223,17 @@ const GuestBook = () => {
                 maxLength={29}
               />
               <ButtonContainer>
-                <CancelButton onClick={() => {setShowInput(false); setInputMessage("")}}>취소</CancelButton>
-                <ConfirmButton onClick={async() => await addGuestBookData()}>확인</ConfirmButton>
+                <CancelButton
+                  onClick={() => {
+                    setShowInput(false);
+                    setInputMessage("");
+                  }}
+                >
+                  취소
+                </CancelButton>
+                <ConfirmButton onClick={async () => await addGuestBookData()}>
+                  확인
+                </ConfirmButton>
               </ButtonContainer>
             </Item>
           )}
@@ -292,10 +351,17 @@ const StyledInput = styled.input`
   height: 4em;
 `;
 
-const ButtonContainer = styled.div`
+const InputCommentContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  align-items: center;
+`;
+
+const StyledCommentInput = styled.input`
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid #ebe5e5;
+  height: 1.8em;
 `;
 
 const Button = styled.button`
@@ -305,6 +371,20 @@ const Button = styled.button`
   color: #fff;
   background-color: ${(props) => props.theme.backgroundColor};
   cursor: pointer;
+`;
+
+const CommentButton = styled(Button)`
+  background-color: #eeb148;
+  height: 2em;
+  padding: 0 1em;
+  margin-left: 0.5em;
+  width: 5em;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 `;
 
 const ConfirmButton = styled(Button)`

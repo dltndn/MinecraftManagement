@@ -19,7 +19,7 @@ export interface SetUsing_db {
     usage: string;
 }
 
-export interface UserSignUp_db extends User_db{
+export interface UserSignUp_db extends User_db {
     user_name: string;
 }
 
@@ -31,4 +31,8 @@ export interface GuestBookInsert_db {
     user_id: string;
     message: string;
     timeStamp: string;
+}
+
+export interface CommentInsert_db extends GuestBookInsert_db {
+    book_id: string;
 }
