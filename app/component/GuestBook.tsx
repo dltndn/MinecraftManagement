@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { getTimeAgo } from "../util/calAny";
 import axios from "axios";
 
+import { useUserInfo } from "../util/zustandManagement";
+
 interface ContentsObj {
   name: string;
   message: string;
-  comment_count: number;
+  comment_count: string;
   timeStamp: number;
   bookId: number;
 }
@@ -21,9 +23,9 @@ interface ContentsPara {
 }
 
 interface CommentsObj {
-    name: string;
-    message: string;
-    timeStamp: number;
+  name: string;
+  message: string;
+  timeStamp: number;
 }
 
 const Comments = ({ bookId }: CommentsPara) => {
@@ -33,6 +35,10 @@ const Comments = ({ bookId }: CommentsPara) => {
     font-size: 10px;
     color: #888;
     margin-left: 2em;
+  `;
+
+  const Font = styled.div`
+    font-size: 12px;
   `;
 
   const getComments = async () => {
@@ -63,9 +69,9 @@ const Comments = ({ bookId }: CommentsPara) => {
           {comments.map((val, index) => (
             <CommentBubble key={index}>
               <BubbleContent>
-                <div style={{'font-size': '12px'}}>
+                <Font>
                   {val.name} | {val.message}
-                </div>
+                </Font>
                 <TimeAgo>{getTimeAgo(val.timeStamp)}</TimeAgo>
               </BubbleContent>
             </CommentBubble>
@@ -80,7 +86,7 @@ const Contents = ({ data }: ContentsPara) => {
   const [isClickedComment, setIsClickedComment] = useState<boolean>(false);
 
   return (
-    <Item onClick={() => setIsClickedComment(!isClickedComment)}>
+    <Item onClick={() => {if(data.comment_count !== "0"){setIsClickedComment(!isClickedComment)} }}>
       <Name>{data.name}</Name>
       <TimeAgo>{getTimeAgo(data.timeStamp)}</TimeAgo>
       <Content>{data.message}</Content>
@@ -98,6 +104,10 @@ const Contents = ({ data }: ContentsPara) => {
 
 const GuestBook = () => {
   const [contents, setContents] = useState<ContentsObj[] | null>(null);
+  const [showInput, setShowInput] = useState<boolean>(false);
+  const [inputMessage, setInputMessage] = useState<string>("")
+
+  const { isSignIn, userIdG } = useUserInfo()
 
   const getGuestBookData = async () => {
     try {
@@ -110,15 +120,42 @@ const GuestBook = () => {
     }
   };
 
+  const addGuestBookData = async () => {
+    if (!isSignIn) {
+        alert("로그인부터 진행해주세요")
+        return
+    }
+    const currentTime = Math.floor(Date.now() / 1000);
+    const requestData = {
+      user_id: userIdG,
+      message: inputMessage,
+      timeStamp: currentTime.toString()
+    };
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/insertGuestBook`,
+        requestData
+      );
+      console.log(response.data.result);
+      setShowInput(false)
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleMessage = (event: any) => {
+    setInputMessage(event.target.value);
+  };
+
   useEffect(() => {
     getGuestBookData();
-  }, []);
+  }, [showInput]);
 
   return (
     <Container>
       <TitleContainer>
         <Title>방명록</Title>
-        <AddButton>
+        <AddButton onClick={() => setShowInput(true)}>
           <FiPlusSquare size={22} />
         </AddButton>
       </TitleContainer>
@@ -126,6 +163,21 @@ const GuestBook = () => {
         <>로딩중...</>
       ) : (
         <>
+          {showInput && (
+            <Item>
+              <StyledInput
+                type="text"
+                value={inputMessage}
+                onChange={handleMessage}
+                placeholder="내용을 입력하세요"
+                maxLength={29}
+              />
+              <ButtonContainer>
+                <CancelButton onClick={() => {setShowInput(false); setInputMessage("")}}>취소</CancelButton>
+                <ConfirmButton onClick={async() => await addGuestBookData()}>확인</ConfirmButton>
+              </ButtonContainer>
+            </Item>
+          )}
           {contents.map((val, index) => (
             <Contents key={index} data={val} />
           ))}
@@ -229,6 +281,38 @@ const BubbleContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const StyledInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ebe5e5;
+  height: 4em;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
+
+const Button = styled.button`
+  padding: 7px 20px;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
+  background-color: ${(props) => props.theme.backgroundColor};
+  cursor: pointer;
+`;
+
+const ConfirmButton = styled(Button)`
+  background-color: #eeb148;
+`;
+
+const CancelButton = styled(Button)`
+  background-color: #8891a8;
 `;
 
 // 추가 버튼

@@ -5,6 +5,8 @@ export interface UserInfo {
     setIsClickLogIn: (data: boolean) => void;
     userNameG: string;
     setUserNameG: (data: string) => void;
+    userIdG: string;
+    setUserIdG: (data: string) => void;
 }
 
 export interface User_db {
@@ -23,4 +25,10 @@ export interface UserSignUp_db extends User_db{
 
 export interface GuestBook_db {
     book_id: string;
+}
+
+export interface GuestBookInsert_db {
+    user_id: string;
+    message: string;
+    timeStamp: string;
 }

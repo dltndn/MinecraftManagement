@@ -8,7 +8,7 @@ import axios from "axios";
 const url = process.env.NEXT_PUBLIC_DB_URL
 
 const LogIn = () => {
-  const { setIsSignIn, setIsClickLogIn, setUserNameG } = useUserInfo();
+  const { setIsSignIn, setIsClickLogIn, setUserNameG, setUserIdG } = useUserInfo();
 
   const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -40,7 +40,8 @@ const LogIn = () => {
         if (response.data.result !== null) {
           setIsSignIn(true);
           setIsClickLogIn(false);
-          setUserNameG(response.data.result);
+          setUserNameG(response.data.result.name);
+          setUserIdG(response.data.result.userIdIndex)
         } else {
           alert("로그인 실패...")
           setUserId("")

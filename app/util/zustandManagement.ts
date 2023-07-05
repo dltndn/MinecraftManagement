@@ -8,4 +8,6 @@ export const useUserInfo = create<UserInfo>((set) => ({
     setIsClickLogIn: (newPara: boolean) => set({ isClickLogIn: newPara }),
     userNameG: "000",
     setUserNameG: (newPara: string) => set({ userNameG: newPara }),
+    userIdG: "0",
+    setUserIdG: (newPara: string) => set({ userIdG: newPara }),
   }));

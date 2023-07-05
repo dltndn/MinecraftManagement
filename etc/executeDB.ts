@@ -1,14 +1,14 @@
 import { dbConnect } from "./dbConnector";
-import { User_db, SetUsing_db, UserSignUp_db, GuestBook_db } from "@/app/util/interface/compInterface";
+import { User_db, SetUsing_db, UserSignUp_db, GuestBook_db, GuestBookInsert_db } from "@/app/util/interface/compInterface";
 
 //** user_id, user_password */
 export const checkUser_db = async (submitData: User_db) => {
     const connection = await dbConnect();
     try {
-        const rows = await connection.query(`SELECT * FROM USER`);
+        const rows = await connection.query(`SELECT ID, PASSWORD, USERID AS userIdIndex, NAME AS name FROM USER`);
         for (const row of rows) {
             if (submitData.user_id === row.ID && submitData.user_password === row.PASSWORD) {
-                return row.NAME
+                return row
             }
           }          
         return null
@@ -102,6 +102,21 @@ export const getComments_db = async (submitData: GuestBook_db) => {
         }
     } catch (e) {
         return null
+    } finally {
+        await connection.end();
+    }
+}
+
+export const insertGuestBook_db = async(submitData: GuestBookInsert_db) => {
+    const connection = await dbConnect();
+    try {
+        const rows = await connection.query(`INSERT INTO GUESTBOOK (USERID, MESSAGE, TIMESTAMP)
+        VALUES ('${submitData.user_id}', '${submitData.message}', '${submitData.timeStamp}');
+        `);
+        return true
+    } catch(e) {
+        console.log(e)
+        return false
     } finally {
         await connection.end();
     }
