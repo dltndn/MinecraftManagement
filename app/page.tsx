@@ -30,7 +30,13 @@ export default function Home() {
   const [isSet, setIsSet] = useState<number>(0)
 
   const setUsingAccount = async (usageInput: boolean) => {
-    const clicked = confirm("사용 중으로 변경하시겠습니까?")
+    let qContent:string
+    if (usageInput) {
+      qContent = "사용 중으로 변경할까요?"
+    } else {
+      qContent = "사용 안함으로 변경할까요?"
+    }
+    const clicked = confirm(qContent)
     if (clicked) {
       let usageData: string;
     if (usageInput) {
