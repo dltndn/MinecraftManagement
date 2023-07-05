@@ -23,7 +23,7 @@ const SignUpPage = () => {
     };
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_DB_URL}/api/setUsing`, requestData
+        `${process.env.NEXT_PUBLIC_DB_URL}/api/signUp`, requestData
       );
       if (response.data.result === true) {
         return true
